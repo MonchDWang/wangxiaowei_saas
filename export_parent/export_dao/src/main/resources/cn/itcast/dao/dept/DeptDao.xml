@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.itcast.dao.dept.DeptDao" >
+    <!--企业部门的查询-->
+    <resultMap id="deptResultMap" type="cn.itcast.domain.Dept">
+        <id     property="id" column="dept_id"></id>
+        <result property="deptName" column="dept_name"></result>
+        <result property="state" column="state"></result>
+        <result property="companyId" column="company_id"></result>
+        <result property="companyName" column="company_name"></result>
+        <!--父部门 对象-->
+        <association property="parent" javaType="cn.itcast.domain.Dept"
+         column="parent_id" select="findById" ></association>
+    </resultMap>
+    <select id="findPageAll" resultMap="deptResultMap" parameterType="string">
+          select * from pe_dept where company_id=#{companyId}
+    </select>
+    <select id="findById" resultMap="deptResultMap" parameterType="string">
+        SELECT * FROM pe_dept WHERE dept_id=#{parent_id}
+    </select>
+    <!--部门修改-->
+    <update id="update" parameterType="cn.itcast.domain.Dept">
+        update pe_dept set
+            dept_name = #{deptName},
+            parent_id = #{parent.id},
+            state = #{state}
+        where dept_id=#{id}
+    </update>
+
+
+    <!--查询所有部门-->
+    <select id="findAllDept"  resultMap="deptResultMap" parameterType="string">
+       select * from pe_dept where company_id=#{companyId}
+    </select>
+    <!--部门保存-->
+    <insert id="save" parameterType="cn.itcast.domain.Dept">
+        insert into pe_dept
+          (
+            dept_id,
+            dept_name,
+            parent_id,
+            state,
+            company_id,
+            company_name
+          )
+          values
+          (
+            #{id},
+            #{deptName},
+            #{parent.id},
+            #{state},
+            #{companyId},
+            #{companyName}
+          )
+    </insert>
+
+    <delete id="delete" parameterType="string">
+        delete from pe_dept where dept_id=#{id};
+    </delete>
+</mapper>

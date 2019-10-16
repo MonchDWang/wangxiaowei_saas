@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itcast.dao.stat.StatDao">
+
+    <select id="findFactoryData" parameterType="string" resultType="map">
+          SELECT factory_name name,SUM(amount) value FROM co_contract_product WHERE company_id=#{id}
+          GROUP BY factory_name;
+    </select>
+
+    <select id="findSellData" parameterType="string" resultType="map">
+        SELECT product_no productNo,SUM(amount) count FROM co_contract_product WHERE company_id=#{id}
+        GROUP BY product_no ORDER BY SUM(amount) DESC LIMIT 0,15;
+    </select>
+
+    <select id="findOnlineData" parameterType="string" resultType="map">
+       SELECT info.a1,IFNULL(l.count,0) count FROM st_online_info info LEFT JOIN
+        (
+            SELECT COUNT(id) COUNT,DATE_FORMAT(TIME,'%H') HOUR FROM st_sys_log WHERE company_id=#{id}
+            GROUP BY DATE_FORMAT(TIME,'%H')
+        )l ON info.A1=l.hour
+    </select>
+    <select id="findCountIpData" parameterType="string" resultType="map">
+    select ip,count(*) countIp from st_sys_log WHERE company_id=#{id} GROUP BY ip order by countIp desc limit 10;
+</select>
+    <select id="findPriceData" resultType="map">
+    select PRODUCT_NO productNo ,PRICE price from co_product p GROUP BY productNo limit 0,10
+</select>
+
+
+
+</mapper>

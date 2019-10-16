@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.itcast.dao.company.CompanyDao" >
+        <!--企业查询-->
+        <resultMap id="companyResultMap" type="cn.itcast.domain.Company">
+            <id     property="id" column="id"></id>
+
+            <result property="name" column="name"></result>
+            <result property="expirationDate" column="expiration_date"></result>
+            <result property="address" column="address"></result>
+            <result property="licenseId" column="license_id"></result>
+            <result property="representative" column="representative"></result>
+            <result property="phone" column="phone"></result>
+            <result property="companySize" column="company_size"></result>
+            <result property="industry" column="industry"></result>
+            <result property="remarks" column="remarks"></result>
+            <result property="state" column="state"></result>
+            <result property="balance" column="balance"></result>
+            <result property="city" column="city"></result>
+
+        </resultMap>
+
+        <!--企业信息的查询-->
+        <select id="findAll" resultMap="companyResultMap">
+            select * from ss_company
+        </select>
+
+       <!--企业信息的添加-->
+        <insert id="save" parameterType="cn.itcast.domain.Company">
+            INSERT INTO ss_company(id, name, expiration_date, address, license_id, representative, phone, company_size, industry, remarks, state, balance, city)
+            VALUE
+            (#{id}, #{name}, #{expirationDate}, #{address}, #{licenseId}, #{representative}, #{phone}, #{companySize}, #{industry}, #{remarks}, #{state}, #{balance}, #{city} )
+        </insert>
+
+        <!--根据id查询企业信息-->
+        <select id="findById" resultMap="companyResultMap" parameterType="string">
+            select * from ss_company where id=#{id}
+        </select>
+
+        <!--修改-->
+        <update id="update" parameterType="cn.itcast.domain.Company">
+            update ss_company set
+            name=#{name},
+            expiration_date=#{expirationDate},
+            address=#{address},
+            license_id=#{licenseId},
+            representative=#{representative},
+            phone=#{phone},
+            company_size=#{companySize},
+            industry=#{industry},
+            remarks=#{remarks},
+            state=#{state},
+            balance=#{balance},
+            city=#{city}
+            where id=#{id}
+        </update>
+
+        <!--删除-->
+        <delete id="deleteById" parameterType="string">
+            delete from ss_company where id=#{id}
+        </delete>
+
+        <!--分页查询-->
+        <select id="findList" resultMap="companyResultMap" parameterType="map">
+            select * from ss_company limit #{start},#{pageSize}
+        </select>
+        <!--分页总条数-->
+        <select id="findCount" resultType="int">
+            select count(*) from ss_company
+        </select>
+
+        <!--pageHelper插件的数据查询-->
+        <select id="findPageList" resultMap="companyResultMap">
+            select * from ss_company
+        </select>
+
+
+</mapper>

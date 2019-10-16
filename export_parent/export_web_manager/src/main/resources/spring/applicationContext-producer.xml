@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/jms
+        http://www.springframework.org/schema/jms/spring-jms.xsd
+		http://activemq.apache.org/schema/core
+        http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!--
+        目的：spring和activeMq整合：通过整合JmsTemplate对象进行消息发送
+    -->
+    <!--1.连接工厂-->
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616"></property>
+    </bean>
+    <!--2.spring管理连接工厂-->
+    <bean id="connectionFactory"  class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"></property>
+    </bean>
+    <!--3.通过连接工厂创建jmstemplate-->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory"></property>
+    </bean>
+
+    <!--4.1 指定目的地址：queue-->
+    <bean id="queue" class="org.apache.activemq.command.ActiveMQQueue">
+        <!--名称-->
+        <constructor-arg value="email"></constructor-arg>
+    </bean>
+
+
+
+</beans>
